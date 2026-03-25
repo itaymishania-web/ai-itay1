@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+<meta charset="UTF-8">
+<title>AI Chat Bot</title>
+
+<style>
+body {
+  background: black;
+  color: #00ff00;
+  font-family: monospace;
+  text-align: center;
+}
+
+#chatBox {
+  width: 80%;
+  max-width: 600px;
+  height: 300px;
+  margin: 20px auto;
+  border: 1px solid #00ff00;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+input {
+  width: 70%;
+  padding: 10px;
+  background: black;
+  color: #00ff00;
+  border: 1px solid #00ff00;
+}
+
+button {
+  padding: 10px;
+  background: black;
+  color: #00ff00;
+  border: 1px solid #00ff00;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<h1>AI Chat Bot</h1>
+
+<div id="chatBox"></div>
+
+<input type="text" id="userInput" placeholder="כתוב הודעה...">
+<button onclick="sendMessage()">שלח</button>
+
+<script>
+async function sendMessage() {
+  let input = document.getElementById("userInput").value;
+  let chatBox = document.getElementById("chatBox");
+
+  if (!input) return;
+
+  chatBox.innerHTML += "<p>> " + input + "</p>";
+  chatBox.innerHTML += "<p style='color:gray'>Thinking...</p>";
+
+  try {
+    const response = await fetch("https://api.allorigins.win/raw?url=https://api-inference.huggingface.co/models/facebook/blenderbot-400M-distill", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer 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",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        inputs: input
+      })
+    });
+
+    const data = await response.json();
+
+    let reply = "";
+
+    if (data.error) {
+      reply = "❌ שגיאה: " + data.error;
+    } else if (Array.isArray(data) && data[0]?.generated_text) {
+      reply = data[0].generated_text;
+    } else {
+      reply = "⚠️ אין תשובה כרגע";
+    }
+
+    chatBox.innerHTML += "<p style='color:lightgreen'>" + reply + "</p>";
+
+  } catch (err) {
+    chatBox.innerHTML += "<p style='color:red'>❌ שגיאת חיבור</p>";
+  }
+
+  document.getElementById("userInput").value = "";
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+</script>
+
+</body>
+</html>
