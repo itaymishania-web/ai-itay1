@@ -58,18 +58,20 @@ async function sendMessage() {
 
   chatBox.innerHTML += "<p>> " + input + "</p>";
 
-  let lower = input.toLowerCase();
+  // ניקוי טקסט (חשוב מאוד)
+  let clean = input.replace(/\s/g, "").toLowerCase();
 
-  // ✅ תשובה מותאמת לשאלות נפוצות
-  if (lower.includes("מה שלומך") || lower.includes("איך אתה")) {
+  // בדיקה חזקה יותר
+  if (
+    clean.includes("איךאתה") ||
+    clean.includes("מהשלומך") ||
+    clean.includes("מהקורה") ||
+    clean.includes("מהנשמע")
+  ) {
     chatBox.innerHTML += "<p style='color:lightgreen'>אני בסדר איך אפשר לעזור לך היום</p>";
-    document.getElementById("userInput").value = "";
-    chatBox.scrollTop = chatBox.scrollHeight;
-    return;
+  } else {
+    chatBox.innerHTML += "<p style='color:lightgreen'>לא הבנתי 🤖</p>";
   }
-
-  // fallback תשובה כללית
-  chatBox.innerHTML += "<p style='color:lightgreen'>לא הבנתי 🤖</p>";
 
   document.getElementById("userInput").value = "";
   chatBox.scrollTop = chatBox.scrollHeight;
