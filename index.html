@@ -2,7 +2,7 @@
 <html lang="he">
 <head>
 <meta charset="UTF-8">
-<title>AI Chat Bot</title>
+<title>AI Bot</title>
 
 <style>
 body {
@@ -42,7 +42,7 @@ button {
 
 <body>
 
-<h1>AI Chat Bot</h1>
+<h1>AI Bot</h1>
 
 <div id="chatBox"></div>
 
@@ -50,44 +50,23 @@ button {
 <button onclick="sendMessage()">שלח</button>
 
 <script>
-async function sendMessage() {
-  let input = document.getElementById("userInput").value;
+function sendMessage() {
+  let input = document.getElementById("userInput").value.toLowerCase();
   let chatBox = document.getElementById("chatBox");
 
   if (!input) return;
 
   chatBox.innerHTML += "<p>> " + input + "</p>";
-  chatBox.innerHTML += "<p style='color:gray'>Thinking...</p>";
 
-  try {
-    const response = await fetch("https://api.allorigins.win/raw?url=https://api-inference.huggingface.co/models/facebook/blenderbot-400M-distill", {
-      method: "POST",
-      headers: {
-        "Authorization": "Bearer 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",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        inputs: input
-      })
-    });
+  let reply = "לא הבנתי 🤖";
 
-    const data = await response.json();
+  if (input.includes("שלום")) reply = "שלום 👋";
+  else if (input.includes("מה אתה")) reply = "אני בוט שעונה על שאלות בסיסיות";
+  else if (input.includes("מה שלומך")) reply = "אני עובד תקין 👍";
+  else if (input.includes("תודה")) reply = "בשמחה 😊";
+  else if (input.includes("עזרה")) reply = "שאל אותי כל דבר ואני אנסה לעזור";
 
-    let reply = "";
-
-    if (data.error) {
-      reply = "❌ שגיאה: " + data.error;
-    } else if (Array.isArray(data) && data[0]?.generated_text) {
-      reply = data[0].generated_text;
-    } else {
-      reply = "⚠️ אין תשובה כרגע";
-    }
-
-    chatBox.innerHTML += "<p style='color:lightgreen'>" + reply + "</p>";
-
-  } catch (err) {
-    chatBox.innerHTML += "<p style='color:red'>❌ שגיאת חיבור</p>";
-  }
+  chatBox.innerHTML += "<p style='color:lightgreen'>" + reply + "</p>";
 
   document.getElementById("userInput").value = "";
   chatBox.scrollTop = chatBox.scrollHeight;
