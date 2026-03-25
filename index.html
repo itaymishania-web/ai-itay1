@@ -50,7 +50,14 @@ button {
 <button onclick="sendMessage()">שלח</button>
 
 <script>
-async function sendMessage() {
+function normalize(text) {
+  return text
+    .toLowerCase()
+    .replace(/\s+/g, "")   // מסיר רווחים
+    .replace(/[.,!?]/g, ""); // מסיר סימנים
+}
+
+function sendMessage() {
   let input = document.getElementById("userInput").value;
   let chatBox = document.getElementById("chatBox");
 
@@ -58,15 +65,14 @@ async function sendMessage() {
 
   chatBox.innerHTML += "<p>> " + input + "</p>";
 
-  // ניקוי טקסט (חשוב מאוד)
-  let clean = input.replace(/\s/g, "").toLowerCase();
+  let clean = normalize(input);
 
-  // בדיקה חזקה יותר
+  // בדיקות מדויקות
   if (
-    clean.includes("איךאתה") ||
-    clean.includes("מהשלומך") ||
-    clean.includes("מהקורה") ||
-    clean.includes("מהנשמע")
+    clean === "איךאתה" ||
+    clean === "מהשלומך" ||
+    clean === "מהנשמע" ||
+    clean === "מהקורה"
   ) {
     chatBox.innerHTML += "<p style='color:lightgreen'>אני בסדר איך אפשר לעזור לך היום</p>";
   } else {
